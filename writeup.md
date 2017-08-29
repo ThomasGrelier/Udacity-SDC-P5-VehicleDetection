@@ -51,9 +51,10 @@ The code for feature extractions can be found in the file  `pipeline_functions.p
 Here is an example using the RGB color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8,8)` and `cells_per_block=(2,2)`:
 
 ![alt text](./images/HOG.jpg)
+
 And below we plot the histogam of colors for the same image.
 
-![alt text](./images/hist_colors.jpg)
+![alt text](./images/hist_color.jpg)
 
 The final choice of parameters was made on the basis of the results of the classifier training (cf. next part).
 
@@ -130,28 +131,29 @@ Three parameters characterize the sliding windows search:
 * Size of the window : depending on their relative position with respect to the camera, vehicles may appear small or big. Thus we have to look for different window sizes.
 	* I chose to apply 4 window sizes. Defining the reference window size as 64-by-64 (size of the images of the training set), I then looked for windows scaled by a factor of 1, 2, 3 and 4 (scale factor of X means the window is X times larger and higher).
 * area of search : we don't have to search for cars in the whole image as we are not expecting to find cars in the sky. Moreover small windows can only be applied near the horizon as small cars correspond to cars that are far ahead, whereas big cars are rather expected to be found close to the camera that is in the bottom of the image.
-	* Windows were slided in the area where y>400 (ymax=720) for all x values.
+	* The smallest window size (scale=1) was applied in the vertical range between 380 and 550. The other windows were applied for y between 400 and 720 (=ymax)
 * overlapping of the windows: this is required as vehicles could be split between adajacent windows
 	* I chose an overlapping factor of 0.75, that is window is shifted by 1/4 of it width.
 
-The figure below represents all the windows where car detection is performed in the image.
+The figure below represents the windows positions.
+
 ![windows](./images/windows.jpg)
 
-Note that each extracted image must be resized to 64x64 if scale is different from 1 so as to have the same size as the dataset images.
+Note that before being processed, each extracted image must be resized to 64x64 (unless scale = 1) so as to have the same size as the dataset images.
 
 ### Extract feature and classify
-For each window, we compute features and predict if a vehicle is present with classifier (cf. previous paragraphs).
+For each window, we compute features and apply classifier to predict if a vehicle is present (cf. previous paragraphs).
 
 ### Create heatmap to reject false positives 
 As we saw before, windows are overlapping in the sliding search. Thus a given car may be reported as detected in several overlapping windows, of potentially different sizes. We can see it on the following test image, where we plot all the windows for which the classifier reported a positive detection :
 
 ![windows]('./images/hot_windows.jpg')
 
-On this image we can see that two false detections occured on the left part of the image. The good thing is that no window overlap occurs for these two cases, which will enable to filter them out.
+On this image we can see that a false detection occured on the left part of the image. The good thing is that no window overlap occurs for this case, which will enable to filter it out.
 To combine overlapping windows and reject false positive we build a heatmap of the detected windows. To make a heat-map, we simply add "heat" (+=1) for all pixels within windows where a positive detection is reported by the classifier. The "hot" parts of the map are where the cars are, and by imposing a threshold, we can reject areas affected by false positives.
 The functions to build and apply a threshold to the heatmap can be found in `pipeline_functions.py` (`add_heat()` and `apply_threshold()`).
 
-For our test image, we get the following heatmaps: on the left: no threshold, on the right, threshold = 1. We can see that the two false positives have disappeared from the heatmap.
+For our test image, we get the following heatmaps: on the left: no threshold, on the right, threshold = 1. We can see that the false positive has disappeared from the heatmap.
 
 ![windows]('./images/heatmap.jpg')
 
@@ -162,7 +164,7 @@ For our test image, we then get two labels.
 Finally once we have our labelled areas, the last thing consists in building a tight rectangle box around the label area. This is done with the function `draw_labeled_bboxes()` in `pipeline_functions.py` which returns the input image with the added rectangles. Here we make the assumption that each blob corresponds to a vehicle. Thus we will not be able to separate cars which appear very close on the image.
 Here we see the final result:
 
-![windows]('./images/heatmap.jpg')
+![windows]('./images/detected_vehicles.jpg')
 
 
 ---
