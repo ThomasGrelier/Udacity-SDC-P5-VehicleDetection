@@ -32,10 +32,11 @@ The repository includes the following files:
 * _pipeline\_functions.py_ : functions called by the two previous pipelines
 * _writeup.md_ : work writeup
 
-And two directories:
+And three directories:
 
 * _/images_: images displayed in the report
 * _/videos_: videos of the detected vehicles
+* _/param_: parameters used for image undistortion and parameters of the classifier
 
 ## Dependencies
 
