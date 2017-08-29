@@ -1,29 +1,27 @@
-# **Advanced Lane Finding Project**
-
+# Vehicle Detection
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 ## Overview
-This repository contains the work I did within **Project #4 of Udacity's Self-Driving Car Nanodegree Program**. Objective of the project is to identify the lane boundaries in a video from a front-facing camera on a car.
+This repository contains the work I did within **Project #5 of Udacity's Self-Driving Car Nanodegree Program**. Objective of the project is to detect the cars in a video from a front-facing camera on a car, using **Computer Vision** and **Machine learning** techniques.
 
-*An example of achieved lane detection*
+*An example of achieved car detection*
 
-![](./output_images/lane-drawn.jpg)
-
-
-## Project objectives and steps
-
-The goals / steps of this project are the following:
-
- * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
- * Apply a distortion correction to raw images.
- * Use color transforms and gradients to create a thresholded binary image.
- *  Apply a perspective transform to rectify binary image (“birds-eye view”).
- *  Detect lane pixels and fit to find the lane boundary.
- *  Determine the curvature of the lane and vehicle position with respect to center.
- * Warp the detected lane boundaries back onto the original image.
- * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+![](./images/detected_vehicles.jpg)
 
 
+The Project
+---
+
+The project involves two distinct steps:
+
+*  Train a classifier to detect the presence of a vehicle using a labeled training set of images. This is split in two steps:
+	* Extract features from the image using Computer Vision techniques, like Histogram of Oriented Gradients (HOG).
+	* Train a classifier (SVM)
+* Detect vehicles in an image using previously trained classifier. 
+	* This is done by implementing a sliding-window approach to split image into small batches of different sizes where we search for vehicle using previously trained classifier
+	* Build a heat map of vehicle detections so as to reject outliers 
+	* Draw bounding box for detected vehicles
+	* Estimate a bounding box for vehicles detected.
 
 ## Repository content
 
@@ -37,7 +35,7 @@ The repository includes the following files:
 And two directories:
 
 * _/images_: images displayed in the report
-* _/videos_: videos of the detected lanes
+* _/videos_: videos of the detected vehicles
 
 ## Dependencies
 
