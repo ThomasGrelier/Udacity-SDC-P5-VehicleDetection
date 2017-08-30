@@ -107,13 +107,12 @@ Regarding feature selection, I explored a bunch of feature combinations which ar
 
 ![param](./images/classifier_params.png)
 
-The configurations with the best accuracies were not necessary the ones which performed the best on car detection. Indeed some brought a lot of false positives.
+It turned out that the configurations with the best accuracies were not necessary the ones which performed the best on car detection. Indeed some brought a lot of false positives.
 
 Finally I chose the following combination of features:
 * spatial bins: *size*=(16,16)
-* histogram of colors: *bin_size*=16
 * HOG: *orientations* =8, *pixels_per_cell*=8, *cells_per_block*=1
-* color space: 
+* color space: HLS
 
 As for the SVN parameter selection, the Grid Search systematically ended up with a linear kernel with C=0.001 as the best choice.
 
@@ -191,10 +190,10 @@ In the image pipeline the method to reject false positives was to threshold the 
 For a video, we can take advantage of the fact that a vehicle will be approximately present in the same location for several successive frames. We can then reject detected windows which do not appear on successive frames. For this we implement the following algorithm (the code to perform these steps can be found in `video_pipeline.ipynb` from lines 100 to 120) :
 
 * compute heatmap for the current frame and append it to the history of heatmaps
-* take the last *n_acc* values of the heatmap history (here I took *n_acc*=10) and  label it with the `label()` function (which works on n-D arrays)
+* take the last *n_acc* values of the heatmap history (here I took *n_acc*=15) and  label it with the `label()` function (which works on n-D arrays)
 * keep labels which are present in at least *n_occ_thr* frames out of *n_acc*. Here I took *n_occ_thr*=4
 * build new heatmap history with only the filtered labels
-* accumulate new heatmap over history and threshold it (here I took the threshold equal to 8).
+* accumulate new heatmap over history and threshold it (here I took the threshold equal to 12).
 * label it
 
 Below as an example we plot the results for 5 successive frames. The figures are split in 4 subplots:
@@ -204,17 +203,19 @@ Below as an example we plot the results for 5 successive frames. The figures are
 * Down right: filtered heat map
 * Down left: final car detection
 As we can see, several false positives appear in the successive frames. However they are filtered out by the algorithm.
-![windows]('./images/results21.jpg')
-![windows]('./images/results22.jpg')
-![windows]('./images/results23.jpg')
-![windows]('./images/results24.jpg')
-![windows]('./images/results25.jpg')
+![windows]('./images/results1.jpg')
+![windows]('./images/results2.jpg')
+![windows]('./images/results3.jpg')
+![windows]('./images/results4.jpg')
+![windows]('./images/results5.jpg')
 
 ### Result
 The pipeline was tested on the project video, which is the same one as for the Advanced Lane Finding Project.
 Here's a [link to my video result](./videos/project_video.mp4).
-I also provide an additional video, with split screen, where hot windows, heatmap, filtered heatmap and detected cars are displayed.
-This video is very instructive as we can see that there are a lot false positivies which are well filtered out by our algorithm.
+I also provide an additional [video](./videos/project_video_split.mp4), with split screen, where hot windows, heatmap, filtered heatmap and detected cars are displayed.
+This video is very instructive as we can see that there are a lot false positivies which occur. Most are are well filtered out by the algorithm.
+However there are still many false positive which remain. We observe that some specific patterns of the image, like the guardrails, the tree shadows on the road and the changes of pavement color are frequently detected as cars. Indeed these patterns contains gradients structures that may mislead the classifier.
+Overall, except in a few situations, the algorithm makes a correct job to detect the two cars. Nevertheless there is room to improve!
 
 
 ## Discussion
@@ -222,10 +223,13 @@ This video is very instructive as we can see that there are a lot false positivi
 In this paragraph, I will present the identified weaknesses of my pipeline and how I might improve it if I were going to pursue this project further.  
 
 |  Weakness  | Suggested improvement |
-|:----------:|:------------------:|
+|:-----------|-----------------------|
 | Computational load | 1) Start with a coarse search with for example a smaller overlapping factor, fewer window sizes. Undersample the search to one out of 5 frames |
-| |  2) Implement tracking of vehicles: once a vehicle is detected we can only tighten the search in the next frame to the current location with some margin |
-| Two many false positives | Increase data set 
+| |  2) Implement tracking of vehicles: once a vehicle is detected we can tighten the search in the next frame to the current location with some margin |
+| Two many false positives | 1) Increase data set  |
+|  | 2) Use a more advanced classifier!  |
 
-
+## Conclusion
+The project was about combining feature extraction and a machine learning algorithm to detect cars in an image. This method used to be the main one up to a few years ago. However new and far more powerful techniques have appeared recently. They are based on deep neural networks and don't require feature extraction which is a really tricky task. DNN decide on their own which feature to extract which is more efficient. 
+In this area, one of the latest powerful detection algorithm to be published is SSD (Single Shot MultiBox Detector). It provides both high detection rate and low computational load. [Here](https://www.cs.unc.edu/~wliu/papers/ssd.pdf) is the link to the paper.
 
