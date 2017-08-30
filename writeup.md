@@ -212,7 +212,7 @@ As we can see, several false positives appear in the successive frames. However 
 
 ### Result
 The pipeline was tested on the project video, which is the same one as for the Advanced Lane Finding Project.
-Here's a [link to my video result](./videos/project_video.mp4).
+Here's a [link to my video result](./videos/project_video_output.mp4).
 I also provide an additional [video](./videos/project_video_split.mp4), with split screen, where hot windows, heatmap, filtered heatmap and detected cars are displayed.
 This video is very instructive as we can see that there are a lot false positivies which occur. Most are are well filtered out by the algorithm.
 However there are still many false positive which remain. We observe that some specific patterns of the image, like the guardrails, the tree shadows on the road and the changes of pavement color are frequently detected as cars. Indeed these patterns contains gradients structures that may mislead the classifier.
