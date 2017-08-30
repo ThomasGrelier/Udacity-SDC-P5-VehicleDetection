@@ -107,9 +107,9 @@ Regarding feature selection, I explored a bunch of feature combinations which ar
 
 ![param](./images/classifier_params.png)
 
-It turned out that the configurations with the best accuracies were not necessary the ones which performed the best on car detection. Indeed some brought a lot of false positives.
+Accuracies range between 0.963 and 0.993. It turned out that the configurations with the best accuracies were not necessary the ones which performed the best on car detection. Indeed some brought a lot of false positives.
 
-Finally I chose the following combination of features:
+After a lot of trials, I chose configuration #19 which is the combination of the following features:
 * spatial bins: *size*=(16,16)
 * HOG: *orientations* =8, *pixels_per_cell*=8, *cells_per_block*=1
 * color space: HLS
