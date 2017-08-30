@@ -146,7 +146,7 @@ For each window, we compute features and apply classifier to predict if a vehicl
 ### Create heatmap to reject false positives 
 As we saw before, windows are overlapping in the sliding search. Thus a given car may be reported as detected in several overlapping windows, of potentially different sizes. We can see it on the following test image, where we plot all the windows for which the classifier reported a positive detection :
 
-![windows]('./images/hot_windows.jpg')
+![windows](./images/hot_windows.jpg)
 
 On this image we can see that a false detection occured on the left part of the image. The good thing is that no window overlap occurs for this case, which will enable to filter it out.
 To combine overlapping windows and reject false positive we build a heatmap of the detected windows. To make a heat-map, we simply add "heat" (+=1) for all pixels within windows where a positive detection is reported by the classifier. The "hot" parts of the map are where the cars are, and by imposing a threshold, we can reject areas affected by false positives.
@@ -154,7 +154,7 @@ The functions to build and apply a threshold to the heatmap can be found in `pip
 
 For our test image, we get the following heatmaps: on the left: no threshold, on the right, threshold = 1. We can see that the false positive has disappeared from the heatmap.
 
-![windows]('./images/heatmap.jpg')
+![windows](./images/heatmap.jpg)
 
 ### Label and plot car boxes
 The next step consists in building a tight box around the car. To figure out which pixels belong to which cars, we use the `label()` [function](https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.ndimage.measurements.label.html) from `scipy.ndimage.measurements`. It assigns the same label to pixels of an array which are adjacent and non-zero.   
@@ -163,7 +163,7 @@ For our test image, we then get two labels.
 Finally once we have our labelled areas, the last thing consists in building a tight rectangle box around the label area. This is done with the function `draw_labeled_bboxes()` in `pipeline_functions.py` which returns the input image with the added rectangles. Here we make the assumption that each blob corresponds to a vehicle. Thus we will not be able to separate cars which appear very close on the image.
 Here we see the final result:
 
-![windows]('./images/detected_vehicles.jpg')
+![windows](./images/detected_vehicles.jpg)
 
 
 ---
@@ -203,11 +203,12 @@ Below as an example we plot the results for 5 successive frames. The figures are
 * Down right: filtered heat map
 * Down left: final car detection
 As we can see, several false positives appear in the successive frames. However they are filtered out by the algorithm.
-![windows]('./images/results1.jpg')
-![windows]('./images/results2.jpg')
-![windows]('./images/results3.jpg')
-![windows]('./images/results4.jpg')
-![windows]('./images/results5.jpg')
+
+![windows](./images/results1.jpg)
+![windows](./images/results2.jpg)
+![windows](./images/results3.jpg)
+![windows](./images/results4.jpg)
+![windows](./images/results5.jpg)
 
 ### Result
 The pipeline was tested on the project video, which is the same one as for the Advanced Lane Finding Project.
